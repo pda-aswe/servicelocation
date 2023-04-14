@@ -1,4 +1,3 @@
 class MockLocationProvider:
-
-    def getCurrentLocation():
-        return (48.7697141, 9.1648367)
+    def getCurrentLocation(self):
+        return {"latitude": 40.7128, "longitude": -74.0060}

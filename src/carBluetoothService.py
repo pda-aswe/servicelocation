@@ -1,4 +1,3 @@
 class MockCarBluetoothProvider:
-
-    def isCurrentlyConnected():
+    def isCurrentlyConnected(self):
         return True

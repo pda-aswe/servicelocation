@@ -1,23 +1,23 @@
 import paho.mqtt.client as mqtt
 import os
 import json
-import locationService
-import carBluetoothService
+from src import locationService
+from src import carBluetoothService
 
 class Messenger:
     def __init__(self):
         self.connected = False
 
-        #StockService-Object erstellen
+        # Create LocationService and CarBluetoothService objects
         self.locationService = locationService.MockLocationProvider()
         self.carBluetoothService = carBluetoothService.MockCarBluetoothProvider()
 
-        #aufbau der MQTT-Verbindung
+        # Setup MQTT connection
         self.mqttConnection = mqtt.Client()
         self.mqttConnection.on_connect = self.__onMQTTconnect
         self.mqttConnection.on_message = self.__onMQTTMessage
 
-        #Definition einer Callback-Funktion für ein spezielles Topic
+        # Define callback functions for specific topics
         self.mqttConnection.message_callback_add("req/location/current", self.locationCallback)
         self.mqttConnection.message_callback_add("req/car/connected", self.carBluetoothCallback)
 
@@ -49,10 +49,12 @@ class Messenger:
         pass
 
     def locationCallback(self,client, userdata, msg):
-        self.mqttConnection.publish("location/current",json.dumps(self.locationService.getCurrentLocation()))
+        location = self.locationService.getCurrentLocation()
+        self.mqttConnection.publish("location/current",json.dumps(location))
 
     def carBluetoothCallback(self,client, userdata, msg):
-        self.mqttConnection.publish("req/car/connected",json.dumps(self.carBluetoothService.isCurrentlyConnected()))
+        payload = self.carBluetoothService.isCurrentlyConnected()
+        self.mqttConnection.publish("car/connected",json.dumps(payload))
 
     def foreverLoop(self):
         self.mqttConnection.loop_forever()
