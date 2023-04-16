@@ -5,36 +5,27 @@ from src import messenger
 from unittest import mock
 from unittest.mock import MagicMock, patch, call, ANY
 
-@patch("locationService.MockLocationProvider")
-@patch("carBluetoothService.MockCarBluetoothProvider")
-def test_connect(mock_location, mock_car_bluetooth):
+def test_connect():
     obj = messenger.Messenger()
 
     with patch.object(obj, 'mqttConnection') as mock_connect:
         obj.connect()
         mock_connect.connect.assert_called_with(ANY, 1883, 60)
 
-@patch("locationService.MockLocationProvider")
-@patch("carBluetoothService.MockCarBluetoothProvider")
-def test_disconnect(mock_location, mock_car_bluetooth):
+def test_disconnect():
     obj = messenger.Messenger()
 
     with patch.object(obj, 'connected', True), patch.object(obj, 'mqttConnection') as mock_connect:
         obj.disconnect()
         mock_connect.disconnect.assert_called()
 
-@patch("locationService.MockLocationProvider")
-@patch("carBluetoothService.MockCarBluetoothProvider")
-def test_foreverLoop(mock_location, mock_car_bluetooth):
+def test_foreverLoop():
     obj = messenger.Messenger()
-
     with patch.object(obj, 'mqttConnection') as mock_connect:
         obj.foreverLoop()
         mock_connect.loop_forever.assert_called()
 
-@patch("locationService.MockLocationProvider")
-@patch("carBluetoothService.MockCarBluetoothProvider")
-def test_onMQTTconnect(mock_location, mock_car_bluetooth):
+def test_onMQTTconnect():
     obj = messenger.Messenger()
     mock_client = MagicMock()
     obj._Messenger__onMQTTconnect(mock_client, None, None, None)
@@ -42,6 +33,10 @@ def test_onMQTTconnect(mock_location, mock_car_bluetooth):
     calls = list(mock_client.subscribe.call_args_list)
     expected_calls = [call([("req/location/current", 0)]), call([("req/car/connected", 0)])]
     assert calls == expected_calls
+
+def test_onMQTTMessage():
+    obj = messenger.Messenger()
+    obj._Messenger__onMQTTMessage(MagicMock(),None,None)
 
 @patch("locationService.MockLocationProvider")
 def test_locationCallback(mock_location):
