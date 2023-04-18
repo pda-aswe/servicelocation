@@ -60,4 +60,4 @@ def test_carBluetoothCallback(mock_car_bluetooth):
     with patch.object(obj, 'mqttConnection') as mock_connect:
         mock_car_bluetooth.return_value.isCurrentlyConnected.return_value = {"connected": "true"}
         obj.carBluetoothCallback(None, None, responseData)
-        mock_connect.publish.assert_called_with("car/connected", "true")
+        mock_connect.publish.assert_called_with("car/connected", '{"connected": "true"}')
