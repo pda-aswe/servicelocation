@@ -1,8 +1,8 @@
 import paho.mqtt.client as mqtt
 import os
 import json
-from src import locationService
-from src import carBluetoothService
+import locationService
+import carBluetoothService
 
 class Messenger:
     def __init__(self):
